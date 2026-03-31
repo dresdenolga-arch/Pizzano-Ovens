@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FireCraft Ovens — Real Fire. Real Pizza.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0b08;
+    --bg2: #141210;
+    --bg3: #1a1713;
+    --fire: #c46222;
+    --fire2: #e07830;
+    --gold: #d4a84b;
+    --cream: #f5ede0;
+    --muted: #7a6e62;
+    --border: rgba(196,98,34,0.2);
+    --font-serif: 'Cormorant Garamond', serif;
+    --font-sans: 'Space Grotesk', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: linear-gradient(to bottom, rgba(12,11,8,.95) 0%, transparent 100%);
+    backdrop-filter: blur(2px);
+  }
+  .logo {
+    font-family: var(--font-serif);
+    font-size: 22px; font-weight: 700; letter-spacing: .04em;
+    color: var(--cream);
+  }
+  .logo span { color: var(--fire); font-style: italic; }
+  nav ul { list-style: none; display: flex; gap: 36px; }
+  nav ul a {
+    text-decoration: none; color: var(--muted);
+    font-size: 13px; letter-spacing: .08em; text-transform: uppercase;
+    transition: color .2s;
+  }
+  nav ul a:hover { color: var(--cream); }
+  .nav-cta {
+    background: var(--fire); color: #fff !important;
+    padding: 9px 22px; border-radius: 4px;
+    font-size: 12px !important; letter-spacing: .1em !important;
+    transition: background .2s !important;
+  }
+  .nav-cta:hover { background: var(--fire2) !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 55% at 70% 60%, rgba(196,98,34,.18) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 40% at 30% 80%, rgba(212,168,75,.08) 0%, transparent 60%),
+      linear-gradient(160deg, #0c0b08 30%, #1a1208 70%, #0e0b06 100%);
+  }
+  .hero-glow {
+    position: absolute; bottom: -80px; right: 10%;
+    width: 520px; height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(196,98,34,.22) 0%, transparent 65%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.08); opacity: .75; }
+  }
+  .hero-flame-svg {
+    position: absolute; right: 8%; bottom: 60px;
+    opacity: .15; pointer-events: none;
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 700px; }
+  .hero-eyebrow {
+    font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--fire); font-weight: 600;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 24px;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block;
+    width: 32px; height: 1px; background: var(--fire);
+  }
+  .hero h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(52px, 7vw, 96px);
+    font-weight: 300; line-height: 1.05;
+    color: var(--cream); margin-bottom: 28px;
+  }
+  .hero h1 strong { font-weight: 700; display: block; }
+  .hero h1 em { font-style: italic; color: rgba(245,237,224,.65); }
+  .hero-sub {
+    font-size: 16px; color: var(--muted); line-height: 1.7;
+    max-width: 460px; margin-bottom: 44px; font-weight: 300;
+  }
+  .hero-actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--fire); color: #fff;
+    font-family: var(--font-sans); font-size: 13px; font-weight: 500;
+    letter-spacing: .08em; text-transform: uppercase;
+    padding: 16px 36px; border-radius: 4px;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: background .2s, transform .15s;
+  }
+  .btn-primary:hover { background: var(--fire2); transform: translateY(-1px); }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--cream); font-size: 13px; letter-spacing: .08em;
+    text-transform: uppercase; text-decoration: none;
+    border: 1px solid rgba(245,237,224,.2); padding: 15px 32px; border-radius: 4px;
+    transition: border-color .2s, background .2s;
+  }
+  .btn-ghost:hover { border-color: rgba(245,237,224,.5); background: rgba(245,237,224,.05); }
+  .hero-stats {
+    position: absolute; bottom: 80px; right: 48px; z-index: 2;
+    display: flex; flex-direction: column; gap: 24px; align-items: flex-end;
+  }
+  .stat { text-align: right; }
+  .stat-number {
+    font-family: var(--font-serif); font-size: 42px; font-weight: 700;
+    color: var(--cream); line-height: 1;
+  }
+  .stat-number span { color: var(--fire); }
+  .stat-label { font-size: 11px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+  .scroll-hint {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--muted); font-size: 10px; letter-spacing: .15em; text-transform: uppercase;
+  }
+  .scroll-line {
+    width: 1px; height: 40px; background: linear-gradient(to bottom, var(--fire), transparent);
+    animation: scrolldown 2s ease-in-out infinite;
+  }
+  @keyframes scrolldown {
+    0% { opacity: 0; transform: scaleY(0); transform-origin: top; }
+    40% { opacity: 1; transform: scaleY(1); }
+    80% { opacity: 0; transform: scaleY(1); transform-origin: bottom; }
+    100% { opacity: 0; }
+  }
+
+  /* SECTION BASE */
+  section { padding: 100px 48px; }
+  .section-eyebrow {
+    font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--fire); font-weight: 600;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-eyebrow::before {
+    content: ''; width: 24px; height: 1px; background: var(--fire);
+  }
+  .section-title {
+    font-family: var(--font-serif);
+    font-size: clamp(36px, 4vw, 58px);
+    font-weight: 300; line-height: 1.15; color: var(--cream);
+    margin-bottom: 16px;
+  }
+  .section-title em { font-style: italic; color: rgba(245,237,224,.55); }
+  .section-title strong { font-weight: 700; }
+  .section-sub { font-size: 15px; color: var(--muted); line-height: 1.7; font-weight: 300; }
+
+  /* WHY / FEATURES */
+  .features { background: var(--bg2); }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+    margin-top: 64px; border: 1px solid var(--border);
+  }
+  .feature-card {
+    padding: 48px 36px; border-right: 1px solid var(--border);
+    position: relative; overflow: hidden;
+    transition: background .3s;
+  }
+  .feature-card:last-child { border-right: none; }
+  .feature-card:hover { background: rgba(196,98,34,.05); }
+  .feature-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; background: linear-gradient(to right, var(--fire), transparent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .4s;
+  }
+  .feature-card:hover::after { transform: scaleX(1); }
+  .feature-icon {
+    width: 48px; height: 48px; margin-bottom: 28px;
+    color: var(--fire);
+  }
+  .feature-title {
+    font-family: var(--font-serif); font-size: 24px; font-weight: 600;
+    color: var(--cream); margin-bottom: 14px;
+  }
+  .feature-text { font-size: 14px; color: var(--muted); line-height: 1.7; font-weight: 300; }
+
+  /* PRODUCTS */
+  .products { background: var(--bg); }
+  .products-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 64px; flex-wrap: wrap; gap: 24px; }
+  .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .product-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    overflow: hidden; cursor: pointer;
+    transition: transform .3s, box-shadow .3s;
+    position: relative;
+  }
+  .product-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(196,98,34,.15); }
+  .product-badge {
+    position: absolute; top: 20px; left: 20px; z-index: 2;
+    background: var(--fire); color: #fff;
+    font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 2px;
+  }
+  .product-visual {
+    height: 240px; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #1a1410 0%, #0e0b07 100%);
+    position: relative; overflow: hidden;
+  }
+  .product-visual::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 80%, rgba(196,98,34,.2) 0%, transparent 65%);
+  }
+  .oven-svg { position: relative; z-index: 1; }
+  .product-info { padding: 28px 28px 32px; }
+  .product-name {
+    font-family: var(--font-serif); font-size: 26px; font-weight: 600;
+    color: var(--cream); margin-bottom: 8px;
+  }
+  .product-tagline { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-weight: 300; }
+  .product-specs {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;
+  }
+  .spec-tag {
+    font-size: 11px; color: var(--fire); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 2px; letter-spacing: .06em;
+  }
+  .product-footer { display: flex; align-items: center; justify-content: space-between; }
+  .product-price {
+    font-family: var(--font-serif); font-size: 30px; font-weight: 700; color: var(--cream);
+  }
+  .product-price sup { font-size: 16px; font-weight: 400; vertical-align: super; color: var(--fire); }
+  .btn-small {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent; border: 1px solid var(--fire);
+    color: var(--fire); font-size: 11px; font-weight: 500; letter-spacing: .1em;
+    text-transform: uppercase; padding: 9px 18px; border-radius: 3px;
+    cursor: pointer; text-decoration: none;
+    transition: background .2s, color .2s;
+  }
+  .btn-small:hover { background: var(--fire); color: #fff; }
+
+  /* HOW IT WORKS */
+  .howitworks { background: var(--bg2); }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 64px; position: relative; }
+  .steps::before {
+    content: ''; position: absolute; top: 28px; left: 10%; right: 10%;
+    height: 1px; background: linear-gradient(to right, transparent, var(--border), var(--border), transparent);
+  }
+  .step { padding: 0 24px 0 0; position: relative; }
+  .step-num {
+    width: 56px; height: 56px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-serif); font-size: 22px; font-weight: 700; color: var(--fire);
+    margin-bottom: 28px; position: relative; z-index: 1;
+  }
+  .step-title {
+    font-family: var(--font-serif); font-size: 20px; font-weight: 600;
+    color: var(--cream); margin-bottom: 12px;
+  }
+  .step-text { font-size: 14px; color: var(--muted); line-height: 1.7; font-weight: 300; }
+
+  /* TESTIMONIALS */
+  .testimonials { background: var(--bg); }
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 64px; }
+  .testi-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    padding: 36px 32px; position: relative;
+  }
+  .testi-card::before {
+    content: '"'; font-family: var(--font-serif); font-size: 80px;
+    color: var(--fire); opacity: .25; position: absolute; top: 10px; right: 24px;
+    line-height: 1;
+  }
+  .stars { color: var(--fire); font-size: 14px; margin-bottom: 18px; letter-spacing: 2px; }
+  .testi-text { font-family: var(--font-serif); font-size: 18px; font-weight: 300; font-style: italic; color: var(--cream); line-height: 1.6; margin-bottom: 24px; }
+  .testi-author { display: flex; align-items: center; gap: 14px; }
+  .author-avatar {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--bg2);
+    border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-serif); font-size: 16px; font-weight: 600; color: var(--fire);
+  }
+  .author-name { font-size: 13px; font-weight: 500; color: var(--cream); }
+  .author-loc { font-size: 11px; color: var(--muted); letter-spacing: .06em; }
+
+  /* CTA BANNER */
+  .cta-banner {
+    background: linear-gradient(135deg, #1a1008 0%, #0e0c08 50%, #1a1208 100%);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    padding: 100px 48px; text-align: center; position: relative; overflow: hidden;
+  }
+  .cta-banner::before {
+    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(196,98,34,.15) 0%, transparent 65%);
+  }
+  .cta-banner > * { position: relative; z-index: 1; }
+  .cta-banner h2 {
+    font-family: var(--font-serif); font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300; color: var(--cream); margin-bottom: 20px;
+  }
+  .cta-banner h2 strong { font-weight: 700; }
+  .cta-banner p { font-size: 16px; color: var(--muted); margin-bottom: 44px; font-weight: 300; }
+  .cta-actions { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg); border-top: 1px solid rgba(255,255,255,.06);
+    padding: 60px 48px 40px;
+  }
+  .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+  .footer-brand .logo { display: block; margin-bottom: 16px; }
+  .footer-brand p { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 240px; font-weight: 300; }
+  .footer-col h4 {
+    font-size: 11px; letter-spacing: .15em; text-transform: uppercase; color: var(--cream);
+    margin-bottom: 18px; font-weight: 600;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color .2s; }
+  .footer-col ul a:hover { color: var(--cream); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,.06);
+    padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+  }
+  .footer-bottom p { font-size: 12px; color: var(--muted); }
+
+  /* ANIMATIONS */
+  .fade-in { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  .fade-delay-1 { transition-delay: .1s; }
+  .fade-delay-2 { transition-delay: .2s; }
+  .fade-delay-3 { transition-delay: .3s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    nav ul { display: none; }
+    section { padding: 72px 24px; }
+    .hero { padding: 0 24px 60px; }
+    .hero-stats { display: none; }
+    .features-grid, .products-grid, .testi-grid { grid-template-columns: 1fr; }
+    .feature-card { border-right: none; border-bottom: 1px solid var(--border); }
+    .steps { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .steps::before { display: none; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .cta-banner { padding: 72px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Fire<span>Craft</span></div>
+  <ul>
+    <li><a href="#products">Ovens</a></li>
+    <li><a href="#why">Why us</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#contact" class="nav-cta">Order now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+
+  <!-- decorative flame SVG -->
+  <svg class="hero-flame-svg" width="340" height="500" viewBox="0 0 340 500" fill="none">
+    <path d="M170 480 C60 380 20 280 80 180 C100 140 90 100 120 60 C130 100 120 140 150 160 C160 120 155 80 180 40 C210 90 200 150 230 180 C270 220 300 300 280 380 C260 440 210 475 170 480Z" fill="url(#fg)" opacity=".6"/>
+    <path d="M170 480 C100 400 80 320 110 240 C125 200 115 160 140 130 C148 160 140 200 165 215 C175 180 170 145 190 120 C215 165 205 215 235 240 C265 280 270 360 245 420 C225 460 195 478 170 480Z" fill="url(#fg2)" opacity=".8"/>
+    <defs>
+      <linearGradient id="fg" x1="170" y1="480" x2="170" y2="40" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#c46222"/>
+        <stop offset="60%" stop-color="#e07830"/>
+        <stop offset="100%" stop-color="#f5c070"/>
+      </linearGradient>
+      <linearGradient id="fg2" x1="170" y1="480" x2="170" y2="120" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#c46222" stop-opacity=".9"/>
+        <stop offset="100%" stop-color="#fad070" stop-opacity=".6"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Gas Pizza Ovens · Worldwide Shipping</div>
+    <h1>
+      <em>The art of</em>
+      <strong>real fire.</strong>
+    </h1>
+    <p class="hero-sub">Handcrafted gas pizza ovens for your home, terrace, or garden. 450°C in 15 minutes. Authentic Neapolitan results — anywhere in the world.</p>
+    <div class="hero-actions">
+      <a href="#products" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Shop ovens
+      </a>
+      <a href="#why" class="btn-ghost">Learn more</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-number">450<span>°C</span></div>
+      <div class="stat-label">Max temperature</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">15<span>min</span></div>
+      <div class="stat-label">Heat-up time</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">60<span>+</span></div>
+      <div class="stat-label">Countries delivered</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    scroll
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="features" id="why">
+  <div class="section-eyebrow">Why FireCraft</div>
+  <div class="section-title">Built for <em>those who</em><br><strong>take fire seriously.</strong></div>
+  <div class="features-grid">
+    <div class="feature-card fade-in">
+      <svg class="feature-icon" viewBox="0 0 48 48" fill="none">
+        <path d="M24 44C14 36 8 26 12 16C14 10 12 4 18 2C18 8 16 14 22 17C24 12 22 7 26 4C32 12 28 20 34 24C40 28 42 36 36 42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="24" cy="32" r="4" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <div class="feature-title">Real 450°C heat</div>
+      <div class="feature-text">Gas burner technology delivers authentic wood-fire temperatures. Your crust blisters. Your toppings caramelise. In 90 seconds flat.</div>
+    </div>
+    <div class="feature-card fade-in fade-delay-1">
+      <svg class="feature-icon" viewBox="0 0 48 48" fill="none">
+        <rect x="8" y="14" width="32" height="24" rx="4" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M16 14V10a8 8 0 0116 0v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="24" cy="26" r="4" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <div class="feature-title">Ships worldwide</div>
+      <div class="feature-text">From New York to Hamburg, we deliver directly to your door. Free shipping to the US and EU on orders over $599.</div>
+    </div>
+    <div class="feature-card fade-in fade-delay-2">
+      <svg class="feature-icon" viewBox="0 0 48 48" fill="none">
+        <path d="M24 6L28 18H40L30 26L34 38L24 30L14 38L18 26L8 18H20L24 6Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      <div class="feature-title">5-year warranty</div>
+      <div class="feature-text">Every oven is pressure-tested and comes with full 5-year coverage. We stand behind every weld, every burner, every stone.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="products-header">
+    <div>
+      <div class="section-eyebrow">Our ovens</div>
+      <div class="section-title">Choose your <strong>fire.</strong></div>
+    </div>
+    <p class="section-sub" style="max-width:320px">Three models. One obsession — perfect pizza at home.</p>
+  </div>
+  <div class="products-grid">
+
+    <!-- Model 1 -->
+    <div class="product-card fade-in">
+      <div class="product-badge">Bestseller</div>
+      <div class="product-visual">
+        <svg class="oven-svg" width="160" height="160" viewBox="0 0 160 160" fill="none">
+          <ellipse cx="80" cy="130" rx="60" ry="8" fill="#c46222" opacity=".2"/>
+          <rect x="20" y="60" width="120" height="70" rx="12" fill="#2a1f14" stroke="#c46222" stroke-width="1"/>
+          <rect x="30" y="50" width="100" height="20" rx="6" fill="#1e1610" stroke="#c46222" stroke-width=".8"/>
+          <ellipse cx="80" cy="95" rx="38" ry="28" fill="#1a1208" stroke="#e07830" stroke-width="1"/>
+          <ellipse cx="80" cy="95" rx="28" ry="20" fill="#0e0b06" stroke="#c46222" stroke-width=".5" opacity=".8"/>
+          <path d="M80 110 C68 100 64 86 70 76 C72 80 70 85 76 87 C78 82 76 78 80 74 C84 78 82 83 88 85 C94 87 92 100 80 110Z" fill="#e07830" opacity=".8"/>
+          <rect x="30" y="128" width="20" height="6" rx="2" fill="#3a2a1a"/>
+          <rect x="110" y="128" width="20" height="6" rx="2" fill="#3a2a1a"/>
+          <circle cx="110" cy="64" r="5" fill="#c46222" opacity=".6"/>
+          <circle cx="125" cy="64" r="3" fill="#c46222" opacity=".4"/>
+        </svg>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Fuoco Classic</div>
+        <div class="product-tagline">For backyard enthusiasts &amp; families</div>
+        <div class="product-specs">
+          <span class="spec-tag">Gas · Propane</span>
+          <span class="spec-tag">Ø 30cm pizza</span>
+          <span class="spec-tag">12 kg</span>
+        </div>
+        <div class="product-footer">
+          <div class="product-price"><sup>$</sup>549</div>
+          <a href="#contact" class="btn-small">Order →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model 2 -->
+    <div class="product-card fade-in fade-delay-1">
+      <div class="product-badge" style="background:var(--gold);color:#111">Pro</div>
+      <div class="product-visual">
+        <svg class="oven-svg" width="160" height="160" viewBox="0 0 160 160" fill="none">
+          <ellipse cx="80" cy="130" rx="65" ry="9" fill="#d4a84b" opacity=".2"/>
+          <rect x="15" y="55" width="130" height="76" rx="14" fill="#2a1f10" stroke="#d4a84b" stroke-width="1.2"/>
+          <rect x="25" y="44" width="110" height="22" rx="7" fill="#1e1608" stroke="#d4a84b" stroke-width=".8"/>
+          <ellipse cx="80" cy="93" rx="42" ry="30" fill="#1a1208" stroke="#d4a84b" stroke-width="1.2"/>
+          <ellipse cx="80" cy="93" rx="30" ry="22" fill="#0e0b06" stroke="#c46222" stroke-width=".5" opacity=".8"/>
+          <path d="M80 110 C65 98 60 82 68 70 C71 75 68 81 76 84 C78 78 75 72 80 68 C85 72 82 79 90 82 C98 85 95 99 80 110Z" fill="#f5b840" opacity=".85"/>
+          <path d="M80 104 C71 97 68 86 73 78 C75 82 73 87 78 89 C80 84 78 80 80 76 C82 80 80 85 86 87 C91 90 88 98 80 104Z" fill="#fff" opacity=".3"/>
+          <rect x="26" y="128" width="22" height="7" rx="2.5" fill="#3a2808"/>
+          <rect x="112" y="128" width="22" height="7" rx="2.5" fill="#3a2808"/>
+          <circle cx="116" cy="58" r="6" fill="#d4a84b" opacity=".7"/>
+          <circle cx="130" cy="58" r="4" fill="#d4a84b" opacity=".4"/>
+          <rect x="38" y="115" width="84" height="3" rx="1.5" fill="#d4a84b" opacity=".15"/>
+        </svg>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Fuoco Pro</div>
+        <div class="product-tagline">For serious home cooks &amp; entertainers</div>
+        <div class="product-specs">
+          <span class="spec-tag">Dual burner</span>
+          <span class="spec-tag">Ø 40cm pizza</span>
+          <span class="spec-tag">18 kg</span>
+        </div>
+        <div class="product-footer">
+          <div class="product-price"><sup>$</sup>899</div>
+          <a href="#contact" class="btn-small">Order →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model 3 -->
+    <div class="product-card fade-in fade-delay-2">
+      <div class="product-badge" style="background:#333;color:var(--cream)">Compact</div>
+      <div class="product-visual">
+        <svg class="oven-svg" width="160" height="160" viewBox="0 0 160 160" fill="none">
+          <ellipse cx="80" cy="130" rx="50" ry="7" fill="#c46222" opacity=".15"/>
+          <rect x="30" y="65" width="100" height="65" rx="10" fill="#2a1f14" stroke="#c46222" stroke-width=".8"/>
+          <rect x="38" y="56" width="84" height="18" rx="5" fill="#1e1610" stroke="#c46222" stroke-width=".7"/>
+          <ellipse cx="80" cy="97" rx="32" ry="23" fill="#1a1208" stroke="#e07830" stroke-width=".8"/>
+          <ellipse cx="80" cy="97" rx="22" ry="16" fill="#0e0b06" stroke="#c46222" stroke-width=".5" opacity=".7"/>
+          <path d="M80 108 C71 101 68 90 73 83 C75 87 72 91 77 93 C79 88 77 84 80 81 C83 84 81 89 86 91 C91 93 89 102 80 108Z" fill="#e07830" opacity=".8"/>
+          <rect x="38" y="127" width="16" height="5" rx="2" fill="#3a2a1a"/>
+          <rect x="106" y="127" width="16" height="5" rx="2" fill="#3a2a1a"/>
+        </svg>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Fuoco Mini</div>
+        <div class="product-tagline">For balconies, apartments &amp; travel</div>
+        <div class="product-specs">
+          <span class="spec-tag">Portable</span>
+          <span class="spec-tag">Ø 26cm pizza</span>
+          <span class="spec-tag">7 kg</span>
+        </div>
+        <div class="product-footer">
+          <div class="product-price"><sup>$</sup>329</div>
+          <a href="#contact" class="btn-small">Order →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="howitworks" id="how">
+  <div class="section-eyebrow">How it works</div>
+  <div class="section-title">From order to <strong>first pizza</strong><br><em>in under a week.</em></div>
+  <div class="steps">
+    <div class="step fade-in">
+      <div class="step-num">01</div>
+      <div class="step-title">Choose your oven</div>
+      <div class="step-text">Pick the model that fits your space and cooking style. All ovens ship with a free pizza stone and peel.</div>
+    </div>
+    <div class="step fade-in fade-delay-1">
+      <div class="step-num">02</div>
+      <div class="step-title">We pack &amp; ship</div>
+      <div class="step-text">Orders are processed within 24 hours and delivered in 3–5 business days to US and EU addresses.</div>
+    </div>
+    <div class="step fade-in fade-delay-2">
+      <div class="step-num">03</div>
+      <div class="step-title">Setup in 10 min</div>
+      <div class="step-text">Connect your gas canister, light the burner, preheat for 15 minutes. No tools, no installation required.</div>
+    </div>
+    <div class="step fade-in fade-delay-3">
+      <div class="step-num">04</div>
+      <div class="step-title">Enjoy real pizza</div>
+      <div class="step-text">Neapolitan-style crust in 90 seconds at 450°C. Every time. Impress your family, your guests, yourself.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-eyebrow">Reviews</div>
+  <div class="section-title">What our <em>customers</em><br><strong>say.</strong></div>
+  <div class="testi-grid">
+    <div class="testi-card fade-in">
+      <div class="stars">★★★★★</div>
+      <div class="testi-text">"I've tried wood-fired, electric — nothing comes close. The Fuoco Pro hits 450°C in 15 minutes and makes the best pizza I've had outside of Naples."</div>
+      <div class="testi-author">
+        <div class="author-avatar">MR</div>
+        <div>
+          <div class="author-name">Michael R.</div>
+          <div class="author-loc">Austin, Texas · USA</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card fade-in fade-delay-1">
+      <div class="stars">★★★★★</div>
+      <div class="testi-text">"Ordered the Mini for our apartment balcony in Berlin. Arrived in 4 days, setup took 8 minutes. Now we make pizza every weekend — my kids are obsessed."</div>
+      <div class="testi-author">
+        <div class="author-avatar">AS</div>
+        <div>
+          <div class="author-name">Anna S.</div>
+          <div class="author-loc">Berlin · Germany</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card fade-in fade-delay-2">
+      <div class="stars">★★★★★</div>
+      <div class="testi-text">"The build quality is exceptional. Heavy, solid, perfectly balanced. After 2 years of near-daily use, it still looks and cooks like new. Worth every penny."</div>
+      <div class="testi-author">
+        <div class="author-avatar">JT</div>
+        <div>
+          <div class="author-name">James T.</div>
+          <div class="author-loc">London · UK</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner" id="contact">
+  <h2>Ready to light<br><strong>your fire?</strong></h2>
+  <p>Free shipping to US &amp; EU · 5-year warranty · 30-day returns</p>
+  <div class="cta-actions">
+    <a href="mailto:hello@firecraft-ovens.com" class="btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+      Contact us to order
+    </a>
+    <a href="https://amazon.com" class="btn-ghost">Find us on Amazon →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="logo">Fire<span>Craft</span></div>
+      <p>Premium gas pizza ovens for home and garden. Shipped worldwide. Built to last a lifetime.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Products</h4>
+      <ul>
+        <li><a href="#products">Fuoco Classic</a></li>
+        <li><a href="#products">Fuoco Pro</a></li>
+        <li><a href="#products">Fuoco Mini</a></li>
+        <li><a href="#contact">Accessories</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#why">About us</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#contact">Shipping</a></li>
+        <li><a href="#contact">Warranty</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:hello@firecraft-ovens.com">hello@firecraft-ovens.com</a></li>
+        <li><a href="#contact">WhatsApp</a></li>
+        <li><a href="https://amazon.com">Amazon store</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 FireCraft Ovens. All rights reserved.</p>
+    <p style="color:var(--muted)">Privacy · Terms · Returns</p>
+  </div>
+</footer>
+
+<script>
+  // Scroll fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Nav scroll effect
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 80
+      ? 'rgba(12,11,8,0.97)'
+      : 'linear-gradient(to bottom, rgba(12,11,8,.95) 0%, transparent 100%)';
+  });
+</script>
+</body>
+</html>
